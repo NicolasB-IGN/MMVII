@@ -46,6 +46,18 @@ Upgrade pip if needed:
 
     python3 -m pip install --upgrade pip
 
+Alternatively you can run the command:
+
+```sh
+python -m build --sdist
+```
+
+To build a `.tar` archive that can be distributed anywhere (build required when installing):
+
+```sh
+pip install ./dist/mmvii-*.tar.gz # Will build MMVII and pyMMVII
+```
+
 
 Usage
 -----

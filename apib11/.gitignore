@@ -9,7 +9,10 @@ Tmp-MM-Dir
 *.tif
 /dist/
 /build/
-/xml/
-MMVII.egg-info/
 Tmmmp-MM-Dir/
 __pycache__
+.venv
+*.egg-info
+src/MMVII/MMVII-LocalParameters
+src/MMVII/sources
+src/MMVII/xml

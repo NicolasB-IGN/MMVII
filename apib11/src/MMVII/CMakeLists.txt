@@ -12,6 +12,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Use Position Independent Code for python binding
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+add_subdirectory("${PROJECT_SOURCE_DIR}/sources")
+
 # PROJ
 find_package(PROJ QUIET)
 if (NOT PROJ_FOUND)
@@ -44,7 +46,7 @@ find_package(Threads)
 # OpenMP: Optional, included in GNU C++, separate package for CLANG.
 find_package(OpenMP)
 if((NOT OpenMP_CXX_FOUND) AND (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
-   message(STATUS "OpenMP not found: did you install libomp-dev ?")
+  message(STATUS "OpenMP not found: did you install libomp-dev ?")
 endif()
 
 # compilers specific options : warnings, MSVC specific defines
@@ -52,30 +54,19 @@ set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 set(gnu_cxx  "$<COMPILE_LANG_AND_ID:CXX,GNU>")
 
-set(mmv2_src_dir "${PROJECT_SOURCE_DIR}/../src")
-set(mmv2_include_dir "${PROJECT_SOURCE_DIR}/../include" "${PROJECT_SOURCE_DIR}/..")
-if(MSVC)
-    set(mmv2_lib "${PROJECT_SOURCE_DIR}/../bin/libP2007.lib")
-else()
-    set(mmv2_lib "${PROJECT_SOURCE_DIR}/../bin/libP2007.a")
-endif()
-set(mmv2_external_include_dir "${PROJECT_SOURCE_DIR}/../ExternalInclude")
+set(mmv2_src_dir "${PROJECT_SOURCE_DIR}/sources/src")
+set(mmv2_include_dir "${PROJECT_SOURCE_DIR}/sources/include" "${PROJECT_SOURCE_DIR}/sources")
+set(mmv2_lib $<TARGET_OBJECTS:P2007>)
+
+set(mmv2_external_include_dir "${PROJECT_SOURCE_DIR}/sources/ExternalInclude")
 set(EIGEN3_INCLUDE_PATH  "${mmv2_external_include_dir}/eigen-3.4.0")
-set(libE57Format_lib "${PROJECT_SOURCE_DIR}/../bin/libE57Format.a")
+set(libE57Format_lib "${PROJECT_SOURCE_DIR}/sources/bin/libE57Format.a")
 
 file(GLOB mmv2_apipy_srcs CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/*.cpp")
 file(GLOB mmv2_headers "${mmv2_include_dir}/*.h" "${mmv2_include_dir}/*/*.h" "${mmv2_src_dir}/*/*.h")
 
 # Debug output to check if files are found
 message(STATUS "mmv2_apipy_srcs: ${mmv2_apipy_srcs}")
-
-add_custom_target(generate_docstrings
-    COMMAND ${CMAKE_COMMAND} -E remove_directory xml
-    COMMAND doxygen
-    COMMAND python3 ${PROJECT_SOURCE_DIR}/makedoc.py xml/class*xml xml/struct*xml xml/namespaceMMVII.xml > docstrings.h
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating docstrings.h"
-)
 
 # Create the pybind11 module
 pybind11_add_module(_MMVII "${mmv2_apipy_srcs}")
@@ -106,4 +97,9 @@ endif()
 # define (VERSION_INFO) here.
 target_compile_definitions(_MMVII PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 
-add_dependencies(_MMVII generate_docstrings)
+add_custom_command(
+  TARGET _MMVII
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/sources/bin" "${CMAKE_CURRENT_BINARY_DIR}/bin"
+)
+
