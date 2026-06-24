@@ -11,13 +11,17 @@ As admin:
 
 In the Python virtual environment used for compilation:
 
-    pip3 install pybind11[global] setuptools build
+    pip3 install -r requirements.txt
 
 
 Compilation
 -----------
 
-First, compile MMv2.
+First, copy MMVII sources into the python module in `apib11` directory:
+
+```sh
+python3 -m build --sdist
+```
 
 Then, in 'apib11' directory and the correct Python virtual environment:
 
@@ -46,18 +50,7 @@ Upgrade pip if needed:
 
     python3 -m pip install --upgrade pip
 
-Alternatively you can run the command:
-
-```sh
-python -m build --sdist
-```
-
-To build a `.tar` archive that can be distributed anywhere (build required when installing):
-
-```sh
-pip install ./dist/mmvii-*.tar.gz # Will build MMVII and pyMMVII
-```
-
+Alternatively you can distribute the mmvii-*.tar.gz archive that allow pip to directly build the package on install.
 
 Usage
 -----
