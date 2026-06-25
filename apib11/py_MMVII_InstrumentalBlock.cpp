@@ -67,7 +67,7 @@ void pyb_init_IrbCal_CamSet(py::module &m)
     py::class_<cIrbCal_CamSet>(m, "IrbCal_CamSet", DOC(MMVII_cIrbCal_CamSet))
         // Accessors
         .def("nbCams", &cIrbCal_CamSet::NbCams, DOC(MMVII_cIrbCal_CamSet, NbCams))
-        .def("vCams", &cIrbCal_CamSet::VCams, DOC(MMVII_cIrbCal_CamSet, VCams))
+        .def("cams", &cIrbCal_CamSet::VCams, DOC(MMVII_cIrbCal_CamSet, VCams))
         .def("masterCam", &cIrbCal_CamSet::MasterCam, DOC(MMVII_cIrbCal_CamSet, MasterCam))
 
         .def("numMaster", &cIrbCal_CamSet::NumMaster, DOC(MMVII_cIrbCal_CamSet, NumMaster))
@@ -197,12 +197,12 @@ void pyb_init_IrbComp_Block(py::module &m)
     using tContTimeS = std::map<std::string, cIrbComp_TimeS>;
 
     py::class_<cIrbComp_Block>(m, "IrbComp_Block", DOC(MMVII_cIrbComp_Block))
-        .def_static("fromFile", &cIrbComp_Block::FromFile, "filename"_a, DOC(MMVII_cIrbComp_Block, FromFile))
+        .def_static("fromFile", &cIrbComp_Block::FromFile, "filename"_a, py::return_value_policy::take_ownership, DOC(MMVII_cIrbComp_Block, FromFile))
         .def("toFile", &cIrbComp_Block::ToFile, "filename"_a, DOC(MMVII_cIrbComp_Block, ToFile))
 
         .def("setOfCalibCams", &cIrbComp_Block::SetOfCalibCams, DOC(MMVII_cIrbComp_Block, SetOfCalibCams))
         .def("nbCams", &cIrbComp_Block::NbCams, DOC(MMVII_cIrbComp_Block, NbCams))
-        .def("calBlock", static_cast<const cIrbCal_Block &(cIrbComp_Block::*)() const>(&cIrbComp_Block::CalBlock), DOC(MMVII_cIrbComp_Block, CalBlock))
+        .def("calBlock", static_cast<const cIrbCal_Block &(cIrbComp_Block::*)() const>(&cIrbComp_Block::CalBlock), py::return_value_policy::reference, DOC(MMVII_cIrbComp_Block, CalBlock))
         .def("dataTS", static_cast<const tContTimeS &(cIrbComp_Block::*)() const>(&cIrbComp_Block::DataTS), DOC(MMVII_cIrbComp_Block, DataTS))
 
         .def("computePoseInstrument", &cIrbComp_Block::ComputePoseInstrument, "SVP"_a = false, DOC(MMVII_cIrbComp_Block, ComputePoseInstrument))

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Root>
+   <Type>"MMVII_Serialization"</Type>
+   <Version>"0.0.0"</Version>
+   <Data>
+      <Cams>
+         <NumMaster>0</NumMaster>
+         <NumPoseInstr>
+            <el>-1</el> <!--Kth=0-->
+         </NumPoseInstr>
+         <Set_Cams>
+            <el>
+               <Num>0</Num>
+               <NameCalib>"CalibIntr_CamILCE-6400_AddC1_Foc16000"</NameCalib>
+               <PatTimeStamp>".*_(.*).JPG"</PatTimeStamp>
+               <SelIsPat>1</SelIsPat>
+               <ImSelect>".*_(.*).JPG"</ImSelect>
+               <IsInit>1</IsInit>
+               <Pose>
+                  <Center>0 0 0</Center>
+                  <RotMatrix>
+                     <AxeI>1.000000000000002 0.000000000000001 0.000000000000002</AxeI>
+                     <AxeJ>0.000000000000001 0.999999999999999 0.000000000000001</AxeJ>
+                     <AxeK>0.000000000000002 0.000000000000001 1.000000000000002</AxeK>
+                  </RotMatrix>
+               </Pose>
+            </el> <!--Kth=0-->
+            <el>
+               <Num>1</Num>
+               <NameCalib>"CalibIntr_CamILCE-6400_AddC2_Foc16000"</NameCalib>
+               <PatTimeStamp>".*_(.*).JPG"</PatTimeStamp>
+               <SelIsPat>1</SelIsPat>
+               <ImSelect>".*_(.*).JPG"</ImSelect>
+               <IsInit>1</IsInit>
+               <Pose>
+                  <Center>0.179500379124685 0.001109243522282 0.004304944502235</Center>
+                  <RotMatrix>
+                     <AxeI>0.999935146472537 0.003187849493386 0.010933456203616</AxeI>
+                     <AxeJ>-0.003232074212153 0.999986657852881 0.004029616919907</AxeJ>
+                     <AxeK>-0.010920464515576 -0.00406469332688 0.99993210855684</AxeK>
+                  </RotMatrix>
+               </Pose>
+            </el> <!--Kth=1-->
+         </Set_Cams>
+      </Cams>
+      <Clinos>         <Set_Clinos></Set_Clinos>
+</Clinos>
+      <SigmasPairs>
+         <Pair>
+            <K>"CalibIntr_CamILCE-6400_AddC1_Foc16000" "CalibIntr_CamILCE-6400_AddC2_Foc16000"</K>
+            <V>
+               <Tr>
+                  <SumW>30</SumW>
+                  <SumVW>0.004200652153816</SumVW>
+                  <Nb>31</Nb>
+               </Tr> <!--SigTr=0.000140021738461-->
+               <Rot>
+                  <SumW>30</SumW>
+                  <SumVW>0.000359902720333</SumVW>
+                  <Nb>31</Nb>
+               </Rot> <!--SigRot=0.000011996757344 rad, 7.637372929770721 dmgon -->
+            </V>
+         </Pair>
+      </SigmasPairs>
+      <DescrIndiv>
+         <Pair>
+            <K>"CalibIntr_CamILCE-6400_AddC1_Foc16000"</K>
+            <V>
+               <Type>"Camera"</Type>
+               <NameInstr>"CalibIntr_CamILCE-6400_AddC1_Foc16000"</NameInstr>
+               <Sigma>
+                  <Tr>
+                     <SumW>30</SumW>
+                     <SumVW>0.004200652153816</SumVW>
+                     <Nb>32</Nb>
+                  </Tr> <!--SigTr=0.000140021738461-->
+                  <Rot>
+                     <SumW>30</SumW>
+                     <SumVW>0.000359902720333</SumVW>
+                     <Nb>32</Nb>
+                  </Rot> <!--SigRot=0.000011996757344 rad, 7.637372929770721 dmgon -->
+               </Sigma>
+            </V>
+         </Pair>
+         <Pair>
+            <K>"CalibIntr_CamILCE-6400_AddC2_Foc16000"</K>
+            <V>
+               <Type>"Camera"</Type>
+               <NameInstr>"CalibIntr_CamILCE-6400_AddC2_Foc16000"</NameInstr>
+               <Sigma>
+                  <Tr>
+                     <SumW>30</SumW>
+                     <SumVW>0.004200652153816</SumVW>
+                     <Nb>32</Nb>
+                  </Tr> <!--SigTr=0.000140021738461-->
+                  <Rot>
+                     <SumW>30</SumW>
+                     <SumVW>0.000359902720333</SumVW>
+                     <Nb>32</Nb>
+                  </Rot> <!--SigRot=0.000011996757344 rad, 7.637372929770721 dmgon -->
+               </Sigma>
+            </V>
+         </Pair>
+      </DescrIndiv>
+      <CstrRelRot></CstrRelRot>
+      <CstrOrthog></CstrOrthog>
+   </Data>
+</Root>
