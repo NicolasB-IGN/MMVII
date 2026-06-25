@@ -89,6 +89,15 @@ PYBIND11_MODULE(_MMVII, m) {
             .value("TN_REAL16",eTyNums::eTN_REAL16)
             ;
 
+    py::enum_<eTyInstr>(m, "TyInstr")
+            .value("Camera", eTyInstr::eCamera)
+            .value("Clino", eTyInstr::eClino)
+            .value("GNSS", eTyInstr::eGNSS)
+            .value("IMU", eTyInstr::eIMU)
+            .value("NbVals", eTyInstr::eNbVals)
+            .value("Target", eTyInstr::eTarget)
+            ;
+
 
     py::class_<MM_Module>(m, "MM_Module")
             .def(py::init<const std::string &>())
@@ -107,5 +116,6 @@ PYBIND11_MODULE(_MMVII, m) {
     pyb_init_MatEssential(m);
     pyb_init_SysSurR(m);
     pyb_init_cWhich(m);
+    pyb_init_InstrumentalBlock(m);
 }
 

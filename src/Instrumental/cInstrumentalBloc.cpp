@@ -304,6 +304,16 @@ cIrbComp_Block::cIrbComp_Block(const cPhotogrammetricProject& aPhProj,const std:
     mPhProj   = &aPhProj;
 }
 
+
+const cIrbComp_Block* cIrbComp_Block::FromFile(const std::string &aFilename) {
+    return new cIrbComp_Block(aFilename);
+}
+
+void cIrbComp_Block::ToFile(const std::string &aFilename) {
+    SaveInFile<cIrbCal_Block>(this->CalBlock(), aFilename);
+}
+
+
     //  -------------------------- "Modificators=progressive construction"  --------------------------------------------
 
 

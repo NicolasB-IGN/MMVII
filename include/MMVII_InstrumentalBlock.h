@@ -540,6 +540,9 @@ class   cIrbComp_Block : public cMemCheck
 
        ~cIrbComp_Block();
 
+       static const cIrbComp_Block* FromFile(const std::string & aFilename);
+       void ToFile(const std::string & aFilename);  
+
        //   =================  Accessors =========================================
        const cIrbCal_CamSet &  SetOfCalibCams() const ; //< Accessor of Accessor
        size_t  NbCams() const ;                         //< Accessor of Accessor of ...

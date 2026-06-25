@@ -26,5 +26,6 @@ void pyb_init_MeasuresIm(py::module_ &m);
 void pyb_init_MatEssential(py::module_ &m);
 void pyb_init_SysSurR(py::module_ &m);
 void pyb_init_cWhich(py::module_ &m);
+void pyb_init_InstrumentalBlock(py::module &m);
 
 #endif // PY_MMVII_H
