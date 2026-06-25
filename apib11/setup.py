@@ -402,6 +402,10 @@ class CMakeBuild(build_ext):
             if hasattr(self, "parallel") and self.parallel:
                 # CMake 3.12+ only.
                 build_args += [f"-j{self.parallel}"]
+            else:
+                cpus = os.cpu_count()
+                if cpus is not None:
+                    build_args += [f"-j{cpus}"]
 
         build_temp = Path(self.build_temp) / ext.name
         if not build_temp.exists():

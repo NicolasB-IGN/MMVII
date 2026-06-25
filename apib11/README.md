@@ -7,32 +7,40 @@ Dependencies
 
 As admin:
 
+```sh
     apt install python3-pip doxygen clang-tools llvm-dev
+```
+
+Make sure to also install the [MMVII dependencies](../README.md#installation-from-sources).
 
 In the Python virtual environment used for compilation:
 
-    pip3 install -r requirements.txt
-
+```sh
+pip3 install -r requirements.txt
+```
 
 Compilation
 -----------
 
-First, copy MMVII sources into the python module in `apib11` directory:
+First, generate the source distribution in `apib11` directory:
 
 ```sh
 python3 -m build --sdist
 ```
 
-Then, in 'apib11' directory and the correct Python virtual environment:
+Then, in `apib11` directory and the correct Python virtual environment. This will build MMVII and the Python API:
 
-    pip wheel . --no-deps -w dist/
-
+```sh
+# You can specify the number of threads to use when building using the CMAKE_BUILD_PARALLEL_LEVEL environment variable
+pip3 wheel . --no-deps -w dist/
+```
 
 Installation
 ------------
 
-    pip install --force-reinstall dist/mmvii*.whl
-
+```sh
+pip3 install --force-reinstall dist/mmvii*.whl
+```
 
 Distribution
 ------------
@@ -44,12 +52,15 @@ MMVII does not have to be installed on the machine to use the python module.
 
 It can be installed with:
 
-    pip3 install MMVII-*.whl
+```sh
+pip3 install MMVII-*.whl
+```
 
 Upgrade pip if needed:
 
-    python3 -m pip install --upgrade pip
-
+```sh
+python3 -m pip install --upgrade pip
+```
 Alternatively you can distribute the mmvii-*.tar.gz archive that allow pip to directly build the package on install.
 
 Usage
