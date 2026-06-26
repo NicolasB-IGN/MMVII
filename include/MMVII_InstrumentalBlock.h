@@ -540,7 +540,6 @@ class   cIrbComp_Block : public cMemCheck
 
        ~cIrbComp_Block();
 
-       static const cIrbComp_Block* FromFile(const std::string & aFilename);
        void ToFile(const std::string & aFilename);  
 
        //   =================  Accessors =========================================

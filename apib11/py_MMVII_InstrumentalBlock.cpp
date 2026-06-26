@@ -197,7 +197,8 @@ void pyb_init_IrbComp_Block(py::module &m)
     using tContTimeS = std::map<std::string, cIrbComp_TimeS>;
 
     py::class_<cIrbComp_Block>(m, "IrbComp_Block", DOC(MMVII_cIrbComp_Block))
-        .def_static("fromFile", &cIrbComp_Block::FromFile, "filename"_a, py::return_value_policy::take_ownership, DOC(MMVII_cIrbComp_Block, FromFile))
+        .def_static("fromFile", [](const std::string &filename)
+                    { return new cIrbComp_Block(filename); }, "filename"_a, py::return_value_policy::take_ownership)
         .def("toFile", &cIrbComp_Block::ToFile, "filename"_a, DOC(MMVII_cIrbComp_Block, ToFile))
 
         .def("setOfCalibCams", &cIrbComp_Block::SetOfCalibCams, DOC(MMVII_cIrbComp_Block, SetOfCalibCams))
