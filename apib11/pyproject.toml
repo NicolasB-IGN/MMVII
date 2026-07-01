@@ -9,3 +9,14 @@ dependencies = [
   "numpy"
 ]
 
+[tool.cibuildwheel]
+manylinux-x86_64-image = "manylinux_2_34"
+before-all = [
+  "dnf install -y cmake proj-devel gdal-devel libomp libomp-devel xerces-c-devel clang",
+]
+before-build = [
+  "pip install pybind11[global]"
+]
+environment-pass = [ "http_proxy", "https_proxy" ]
+environment = { CC="clang", CXX="clang++" }
+repair-wheel-command = ""

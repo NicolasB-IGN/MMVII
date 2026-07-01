@@ -310,10 +310,10 @@ PLAT_TO_CMAKE = {
 # The name must be the _single_ output extension from the CMake build.
 # If you need multiple extensions, see scikit-build.
 class CMakeExtension(Extension):
-    def __init__(self, name: str, sourcedir: str = "") -> None:
+    def __init__(self, name: str, sourcedir: str = "", **kw) -> None:
         root = os.fspath(Path(sourcedir).resolve())
 
-        super().__init__(name, sources=[])
+        super().__init__(name, sources=[], **kw)
         self.sourcedir = root
 
 
