@@ -2,6 +2,8 @@ import os
 import sys
 from pathlib import Path
 
+here = os.path.dirname(__file__)
+
 mmv2_src_relative_path = "../"
 mmv2_install_relative_path = "../../../MMVII/MMVII"
 
@@ -37,7 +39,10 @@ else:
             break
 
 if mm_data_path is None:
-    mm_data_path = os.path.dirname(__file__)
+    mm_data_path = here
+
+if "FLEXIBLAS_LIBRARY_PATH" not in os.environ:
+    os.environ["FLEXIBLAS_LIBRARY_PATH"] = here + "/bin"
 
 if mm_data_path is not None:
     print("MMVII path:", mm_data_path)

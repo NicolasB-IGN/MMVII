@@ -96,6 +96,7 @@ endif()
 # EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
 # define (VERSION_INFO) here.
 target_compile_definitions(_MMVII PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+target_link_options(_MMVII PRIVATE -lproj -lgdal -lxerces-c)
 
 add_custom_command(
   TARGET _MMVII
