@@ -47,18 +47,7 @@ cBA_Topo::cBA_Topo
 
     if (aPhProj)
     {
-        for (auto & aInFile: aPhProj->ReadTopoMes())
-        {
-            std::string aPost = Postfix(aInFile,'.',true);
-            if (UCaseEqual(aPost,"obs"))
-            {
-                mAllTopoDataIn.InsertCompObsFile( aPhProj->DPTopoMes().FullDirIn() + aInFile );
-            } else {
-                cTopoData aTopoData;
-                aTopoData.FromFile( aPhProj->DPTopoMes().FullDirIn() + aInFile );
-                mAllTopoDataIn.InsertTopoData(aTopoData);
-            }
-        }
+        mAllTopoDataIn.InsertTopoDataFromPhProj(*aPhProj);
         mSysCo = mPhProj->CurSysCoGCP(true); // may accept no SysCo if no verticalization
         if (!mSysCo)
             mSysCo = cSysCo::MakeSysCo("LocalNONE");
