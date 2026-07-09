@@ -56,11 +56,11 @@ set(gnu_cxx  "$<COMPILE_LANG_AND_ID:CXX,GNU>")
 
 set(mmv2_src_dir "${PROJECT_SOURCE_DIR}/sources/src")
 set(mmv2_include_dir "${PROJECT_SOURCE_DIR}/sources/include" "${PROJECT_SOURCE_DIR}/sources")
-set(mmv2_lib $<TARGET_OBJECTS:P2007>)
+set(mmv2_lib $<TARGET_OBJECTS:P2007_object>)
 
 set(mmv2_external_include_dir "${PROJECT_SOURCE_DIR}/sources/ExternalInclude")
 set(EIGEN3_INCLUDE_PATH  "${mmv2_external_include_dir}/eigen-3.4.0")
-set(libE57Format_lib "${PROJECT_SOURCE_DIR}/sources/bin/libE57Format.a")
+set(libE57Format_lib $<TARGET_OBJECTS:E57Format>)
 
 file(GLOB mmv2_apipy_srcs CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/*.cpp")
 file(GLOB mmv2_headers "${mmv2_include_dir}/*.h" "${mmv2_include_dir}/*/*.h" "${mmv2_src_dir}/*/*.h")
