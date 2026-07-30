@@ -178,7 +178,7 @@ void cAppli_VisuPoseStr3D::HandleGCP3D(
                 continue;
             const auto & aPtFrom = aSetMes.MesGCPOfName(aObs.mPtsNames[0]).mPt;
             const auto & aPtTo = aSetMes.MesGCPOfName(aObs.mPtsNames[1]).mPt;
-            aPlyverts.DrawLineAsVert(aPtFrom, aPtTo, {0.,1.,0.5}, mTopoLineSpacing);
+            aPlyverts.AddLine(aPtFrom, aPtTo, {0.,1.,0.5});
         }
     }
 
@@ -190,7 +190,7 @@ void cAppli_VisuPoseStr3D::HandleGCP3D(
         const auto & aPtFrom = aSetMes.MesGCPOfName(aObs.mPtsNames[0]).mPt;
         const auto & aPtTo = aSetMes.MesGCPOfName(aObs.mPtsNames[1]).mPt;
 
-        aPlyverts.DrawLineAsVert(aPtFrom, aPtTo, {1.,0.5,0.5}, mTopoLineSpacing);
+        aPlyverts.AddLine(aPtFrom, aPtTo, {1.,0.5,0.5});
     }
 }
 
