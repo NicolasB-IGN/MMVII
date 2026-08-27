@@ -287,6 +287,7 @@ jobs:
       run: gh release delete Windows_MMVII_build -y --cleanup-tag
 
     - name: Upload binaries to release
+      continue-on-error: true
       uses: softprops/action-gh-release@v3
       with:
         name: 'Windows MMVII build - Latest'
