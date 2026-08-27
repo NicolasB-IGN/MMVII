@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'test'
       # Branches allowed to publish a Docker image, tagged after the branch.
       # '*' does not match '/', so a branch reaching here has no '/' in its name.
       #
