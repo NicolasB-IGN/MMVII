@@ -305,7 +305,7 @@ jobs:
 
   build_apipy:
     # Skipped on a docker-* branch: the Python API is not part of the image.
-    if: github.ref_name == 'main'
+    # if: github.ref_name == 'main'
     needs: [build_linux, build_win]
     strategy:
       fail-fast: false
