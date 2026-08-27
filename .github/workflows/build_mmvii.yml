@@ -207,23 +207,23 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - name: Generate token to download libelise.a
-      id: app-token
-      # Replaces tibdex/github-app-token, archived since 2025-07 and left on node 20.
-      # Beware: unlike it, this action scopes the token to the *current* repository
-      # when owner and repositories are omitted, which would not give access to
-      # libelise-win-dev. Hence the two lines below, naming the repository cloned by
-      # the next step -- keep them in step with it.
-      uses: actions/create-github-app-token@v3
-      with:
-        app-id: ${{ secrets.LIBELISE_APP_ID }}
-        private-key: ${{ secrets.LIBELISE_APP_PRIVATE_KEY }}
-        owner: micmac-V2
-        repositories: libelise-win-dev
+    # - name: Generate token to download libelise.a
+    #   id: app-token
+    #   # Replaces tibdex/github-app-token, archived since 2025-07 and left on node 20.
+    #   # Beware: unlike it, this action scopes the token to the *current* repository
+    #   # when owner and repositories are omitted, which would not give access to
+    #   # libelise-win-dev. Hence the two lines below, naming the repository cloned by
+    #   # the next step -- keep them in step with it.
+    #   uses: actions/create-github-app-token@v3
+    #   with:
+    #     app-id: ${{ secrets.LIBELISE_APP_ID }}
+    #     private-key: ${{ secrets.LIBELISE_APP_PRIVATE_KEY }}
+    #     owner: micmac-V2
+    #     repositories: libelise-win-dev
 
-    - name: Download libelise.a
-      run: |
-          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/micmac-V2/libelise-win-dev.git
+    # - name: Download libelise.a
+    #   run: |
+    #       git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/micmac-V2/libelise-win-dev.git
 
     - name: Install Miniconda 
       uses: conda-incubator/setup-miniconda@v4
@@ -242,7 +242,8 @@ jobs:
         version: 5.15
 
     - name: Configure CMake for MMVII
-      run: cmake -S . -B build -DCMAKE_PREFIX_PATH=C:/Miniconda/envs/test/Library -DvMMVII_BUILD=ON -DMMVII_KEEP_LIBRARY_MMV1=ON -DMMV1_PATH=libelise-win-dev
+      run: cmake -S . -B build -DCMAKE_PREFIX_PATH=C:/Miniconda/envs/test/Library -DvMMVII_BUILD=ON
+      # -DMMVII_KEEP_LIBRARY_MMV1=ON -DMMV1_PATH=libelise-win-dev
 
     - name: Build MMVII
       run: cmake --build build --config Release -j 4 --target full
@@ -305,11 +306,11 @@ jobs:
   build_apipy:
     # Skipped on a docker-* branch: the Python API is not part of the image.
     if: github.ref_name == 'main'
-    needs: [build_linux] #[build_linux, build_win]
+    needs: [build_linux, build_win]
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest] # [windows-latest, ubuntu-latest]
+        platform: [windows-latest, ubuntu-latest]
         python-version: ["3.12"] # ["3.10", "3.12"]
 
     runs-on: ${{ matrix.platform }}
@@ -391,19 +392,20 @@ jobs:
       if: runner.os == 'Windows'
       working-directory: ./apib11/
       run: |
-        pip wheel . --no-deps -w dist/
+        python -m build --sdist
+        cibuildwheel --output-dir dist
       env:
         CMAKE_PREFIX_PATH: "C:/Miniconda/envs/test/Library"
         PKG_CONFIG_PATH: "C:/Miniconda/envs/test/Library/lib/pkgconfig"
 
-    - name: Install for Windows
-      if: runner.os == 'Windows'
-      working-directory: ./apib11/
-      run: |
-        pip install dist/mmvii*.whl
-      env:
-        CMAKE_PREFIX_PATH: "C:/Miniconda/envs/test/Library"
-        PKG_CONFIG_PATH: "C:/Miniconda/envs/test/Library/lib/pkgconfig"
+    # - name: Install for Windows
+    #   if: runner.os == 'Windows'
+    #   working-directory: ./apib11/
+    #   run: |
+    #     pip install dist/mmvii*.whl
+    #   env:
+    #     CMAKE_PREFIX_PATH: "C:/Miniconda/envs/test/Library"
+    #     PKG_CONFIG_PATH: "C:/Miniconda/envs/test/Library/lib/pkgconfig"
 
     - name: Upload MMVII apipy
       uses: softprops/action-gh-release@v3
