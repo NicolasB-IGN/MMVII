@@ -201,7 +201,7 @@ jobs:
     # Nothing to do with the Docker image, which is a Linux one: skipped on a
     # docker-* branch. That also spares it the libelise app token, which a fork
     # testing an image has no reason to hold.
-    if: github.ref_name == 'main'
+    if: true # github.ref_name == 'main'
     runs-on: windows-latest
 
     steps:
