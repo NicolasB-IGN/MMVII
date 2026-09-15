@@ -1,4 +1,5 @@
 #include "VisPoseAndStructure.h"
+#include "MMVII_PlyExport.h"
 #include "MMVII_StaticLidar.h"
 #include "MMVII_Topo.h"
 
@@ -95,47 +96,6 @@ std::vector<cOneHelpSampleCmp>  cAppli_VisuPoseStr3D::Samples() const
 bool cAppli_VisuPoseStr3D::AcceptEmptySet(int aK) const
 {
     return aK == 0;
-}
-
-void cAppli_VisuPoseStr3D::HandleTiePoints(
-    cPlyVertices& aPlyverts,
-    const std::vector<cSensorImage *>& aVSens,
-    const std::vector<std::string>& aVNames
-)
-{
-    ASSERT_SORTED(aVNames);
-
-    if (!mPhProj.DPMulTieP().DirInIsInit()) return;
-    TimeSegm().SetIndex("READ TIE-POINTS");
-
-    auto aTPts = AllocStdFromMTPFromFolder(
-        mPhProj.DPMulTieP().DirIn(),
-        aVNames,
-        mPhProj,
-        true,
-        false,
-        true
-    );
-
-    if (!aTPts) return;
-
-    TimeSegm().SetIndex("INTERSECT 3D TIE-POINTS");
-
-    for (auto & aPair : aTPts->Pts())
-    {
-        MakePGround(aPair, aVSens);
-    }
-
-    std::string aPrintRGB = mWithRGB ? "+RGB" : "";
-    std::string aPrintPT3D = "ADD 3D PTS";
-    std::string aPrintCAM = "+CAMERAS";
-    std::string aPrintPtsRGBCam = aPrintPT3D + aPrintRGB + aPrintCAM;
-
-    TimeSegm().SetIndex(aPrintPtsRGBCam);
-
-    AddPointsFromCameras(aPlyverts, aTPts, aVSens);
-
-    delete aTPts;
 }
 
 void cAppli_VisuPoseStr3D::HandleGCP2D(
@@ -246,7 +206,6 @@ int cAppli_VisuPoseStr3D::Exe()
                     (mPhProj.DPMulTieP().DirInIsInit() ? "_"+mPhProj.DPMulTieP().DirIn() :
                      mPhProj.DPGndPt2D().DirInIsInit() ? "_"+mPhProj.DPGndPt2D().DirIn() : "")  +".ply");
 
-
     // vector of all image names
     std::vector<std::string> aVNames;
     // cameras
@@ -270,14 +229,14 @@ int cAppli_VisuPoseStr3D::Exe()
     }
     // sort images alphbetically (and aVSens accordingly) for AllocStdFromMTPFromFolder
     Sort2VectFirstOne(aVNames,aVSens);
-
+    
     // read the tie points
     TimeSegm().SetIndex("READ TIE-POINTS");
     cComputeMergeMulTieP * aTPts = nullptr;
     if (mPhProj.DPMulTieP().DirInIsInit())
     {
         aTPts = AllocStdFromMTPFromFolder(
-                mPhProj.DPMulTieP().DirIn(),aVNames,mPhProj,true,false,true);
+            mPhProj.DPMulTieP().DirIn(),aVNames,mPhProj,true,false,true);
     }
     else if (mPhProj.DPGndPt2D().DirInIsInit())
     {
@@ -294,12 +253,12 @@ int cAppli_VisuPoseStr3D::Exe()
                 cSetHomogCpleIm aCpleH;
                 aCpleH.AddPairSet(*aSetM1,*aSetM2);
                 if (aCpleH.NbH() > 0)
-                    aMIIH.Add(aCpleH,aVNames[aK1],aVNames[aK2]);
+                aMIIH.Add(aCpleH,aVNames[aK1],aVNames[aK2]);
             }
         }
         aTPts = new cComputeMergeMulTieP(aVNames,&aMIIH);
     }
-
+    
     // intersect in 3d
     TimeSegm().SetIndex("INTERSECT 3D TIE-POINTS");
     if (aTPts)
@@ -327,11 +286,17 @@ int cAppli_VisuPoseStr3D::Exe()
 
     cPlyVertices aPlyverts;
 
-    HandleTiePoints(aPlyverts, aVSens, aVNames);
+    if (aTPts)
+    {
+        cPlyExportTiePoints aExpTieP(mErrProjMax,mWithRGB,mWithAvgRGB);
+        aExpTieP.AddTiePoints(aPlyverts,*aTPts,aVSens);
+    }
+
     HandleGCP2D(aPlyverts, aVSens, aVNames);
     HandleGCP3D(aPlyverts);
 
-    AddOnlyCameras(aPlyverts, aVSens);
+    cPlyExportCamGeom aExpCamGeom(mCamScale);
+    aExpCamGeom.AddCameras(aPlyverts,aVSens);
 
     double aCurrHue = 0.;
 
@@ -344,6 +309,10 @@ int cAppli_VisuPoseStr3D::Exe()
                 AddPointCould(aPlyverts, aScan, mTSLCloudDezoom, getNextColor(aCurrHue));
             }
         }
+
+    if (aTPts) {
+        delete aTPts;
+    }
 
     aPlyverts.ToPly(mOutfile, mBinary);
 

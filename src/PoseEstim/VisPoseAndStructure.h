@@ -67,18 +67,6 @@ private:
     bool                      mWithAvgRGB; //RGB values averaged over all images, slower? but less noisy
     double                    mTopoLineSpacing;
 
-    void AddPointsFromCameras(
-        cPlyVertices& aPlyverts,
-        cComputeMergeMulTieP * & aTPts,
-        const std::vector<cSensorImage *>& aVSens
-    );
-    void AddOnlyCameras(cPlyVertices& aPlyverts, const std::vector<cSensorImage *>& aVSens);
-
-    void HandleTiePoints(
-        cPlyVertices& aPlyverts,
-        const std::vector<cSensorImage *>& aVSens,
-        const std::vector<std::string>& aVNames
-    );
     void HandleGCP2D(
         cPlyVertices& aPlyverts,
         const std::vector<cSensorImage *>& aVSens,
@@ -89,7 +77,6 @@ private:
     );
 
     void AddPointCould(cPlyVertices& aPlyverts, cStaticLidar* aScan, int aTSLCloudDezoom, cPt3dr aScanColor, bool aOnlyEdges=false);
-    double CalculateFDepth(const cPt2di&, const double&);
 };
 
 }
