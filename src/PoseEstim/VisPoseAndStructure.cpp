@@ -232,11 +232,12 @@ int cAppli_VisuPoseStr3D::Exe()
     
     // read the tie points
     TimeSegm().SetIndex("READ TIE-POINTS");
-    cComputeMergeMulTieP * aTPts = nullptr;
+    std::unique_ptr<cComputeMergeMulTieP> aTPts;
     if (mPhProj.DPMulTieP().DirInIsInit())
     {
-        aTPts = AllocStdFromMTPFromFolder(
-            mPhProj.DPMulTieP().DirIn(),aVNames,mPhProj,true,false,true);
+        aTPts = std::make_unique<cComputeMergeMulTieP>(
+                    AllocStdFromMTPFromFolder(
+                        mPhProj.DPMulTieP().DirIn(),aVNames,mPhProj,true,false,true));
     }
     else if (mPhProj.DPGndPt2D().DirInIsInit())
     {
@@ -256,7 +257,7 @@ int cAppli_VisuPoseStr3D::Exe()
                 aMIIH.Add(aCpleH,aVNames[aK1],aVNames[aK2]);
             }
         }
-        aTPts = new cComputeMergeMulTieP(aVNames,&aMIIH);
+        aTPts = std::make_unique<cComputeMergeMulTieP>(aVNames,&aMIIH);
     }
     
     // intersect in 3d
@@ -309,10 +310,6 @@ int cAppli_VisuPoseStr3D::Exe()
                 AddPointCould(aPlyverts, aScan, mTSLCloudDezoom, getNextColor(aCurrHue));
             }
         }
-
-    if (aTPts) {
-        delete aTPts;
-    }
 
     aPlyverts.ToPly(mOutfile, mBinary);
 
