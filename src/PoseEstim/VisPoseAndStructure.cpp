@@ -232,12 +232,12 @@ int cAppli_VisuPoseStr3D::Exe()
     
     // read the tie points
     TimeSegm().SetIndex("READ TIE-POINTS");
-    std::unique_ptr<cComputeMergeMulTieP> aTPts;
+    std::unique_ptr<cComputeMergeMulTieP> aTPts(nullptr);
     if (mPhProj.DPMulTieP().DirInIsInit())
     {
-        aTPts = std::make_unique<cComputeMergeMulTieP>(
-                    AllocStdFromMTPFromFolder(
-                        mPhProj.DPMulTieP().DirIn(),aVNames,mPhProj,true,false,true));
+        aTPts = std::unique_ptr<cComputeMergeMulTieP>(
+            AllocStdFromMTPFromFolder(mPhProj.DPMulTieP().DirIn(),aVNames,mPhProj,true,false,true)
+        );
     }
     else if (mPhProj.DPGndPt2D().DirInIsInit())
     {
