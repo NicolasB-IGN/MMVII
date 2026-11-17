@@ -5,8 +5,8 @@
 #include "MMVII_2Include_Tiling.h"
 #include "MMVII_PCSens.h"
 #include "MMVII_StaticLidar.h"
+#include "../Font/cFontDefinitions.h"
 #include "../PoseEstim/VisPoseAndStructure.h"
-#include "PlyFonts/all.h"
 
 #include "happly.h"
 
@@ -429,17 +429,18 @@ int cPlyVertices::AddVert(const cPt3dr &aVert, const cPt3dr &aColor)
     return mPlyVerts.size() - 1;
 }
 
-namespace PlyRegularFont = PlyFontData::SourceCodeProRegular;
-
 void cPlyVertices::DrawCharacter(const cPt3dr &startPosition, const cPt3dr &offsetX, const cPt3dr &offsetY, double scale, const char c, const cPt3dr &color)
 {
-    const auto data = PlyRegularFont::RASTERIZED_CHARACTERS.at(c);
+    const auto &fonts = cFontDefinitions::Default();
+    const auto &data = fonts.GetFont("default_32x64").value().CharacterData(c);
     
-    for (size_t y = 0; y < data.size(); y++) {
-        const auto line = data[y];
-        for (size_t x = 0; x < PlyRegularFont::WIDTH; x++) {
-            const auto bit = (PlyRegularFont::LineType) 1 << (PlyRegularFont::WIDTH - x - 1);
-            if (!(bit & line)) {
+    const auto &img = data.DIm();
+
+    for (size_t y = 0; y < img.SzY(); y++) {
+        for (size_t x = 0; x < img.SzX(); x++) {
+            const auto value = img.GetV(cPt2di(x, y));
+
+            if (value < 10) {
                 continue;
             }
 
@@ -450,18 +451,26 @@ void cPlyVertices::DrawCharacter(const cPt3dr &startPosition, const cPt3dr &offs
 }
 
 void cPlyVertices::DrawString(const cPt3dr &startPosition, const cPt3dr &offsetX, const cPt3dr &offsetY, double scale, const std::string &str, const cPt3dr &color) {
+    const auto &fonts = cFontDefinitions::Default();
+    const auto &data = fonts.GetFont("default_32x64").value().CharacterData(' ');   
+
     auto position = cPt3dr(startPosition.x(), startPosition.y(), startPosition.z());
     
     for (const auto c : str) {
         DrawCharacter(position, offsetX, offsetY, scale, c, color);
 
-        position += offsetX * (PlyRegularFont::WIDTH * scale);
+        position += offsetX * (data.DIm().SzX() * scale);
     }
 
 }
 
 cPt3dr cPlyVertices::StringSize(const double scale, const cPt3dr &offsetX, const cPt3dr &offsetY, const std::string &str) {
-    return offsetX * (PlyRegularFont::WIDTH * scale * str.size()) + offsetY * ((double) PlyRegularFont::HEIGHT * scale);    
+    const auto &fonts = cFontDefinitions::Default();
+    const auto &data = fonts.GetFont("default_32x64").value().CharacterData(' ');   
+
+    const auto &size = data.DIm().Sz();
+
+    return offsetX * (size.x() * scale * str.size()) + offsetY * ((double) size.y() * scale);    
 }
 
 void cPlyVertices::AddLine(const cPt3dr &aStartVertice, const cPt3dr &aEndVertice, const cPt3dr &aColor) {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Root>
+   <Type>"MMVII_Serialization"</Type>
+   <Version>"0.0.0"</Version>
+   <Data>
+      <FontDefinitions>
+        <FontDefinition>
+            <Name>"default"</Name>
+            <ImagePath>"default_8x16.png"</ImagePath>
+            <CharacterWidth>8</CharacterWidth>
+            <CharacterHeight>16</CharacterHeight>
+        </FontDefinition>
+        <FontDefinition>
+            <Name>"bold"</Name>
+            <ImagePath>"bold_8x16.png"</ImagePath>
+            <CharacterWidth>8</CharacterWidth>
+            <CharacterHeight>16</CharacterHeight>
+        </FontDefinition>
+        <FontDefinition>
+            <Name>"default_32x64"</Name>
+            <ImagePath>"default_32x64.png"</ImagePath>
+            <CharacterWidth>32</CharacterWidth>
+            <CharacterHeight>64</CharacterHeight>
+        </FontDefinition>
+      </FontDefinitions>
+   </Data>
+</Root>

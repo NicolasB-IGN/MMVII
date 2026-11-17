@@ -7,36 +7,12 @@ from fontTools.pens.freetypePen import FreeTypePen
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.misc.transform import Transform
 
-TARGET_WIDTH = 32
-TARGET_HEIGHT = 64
+from PIL import Image
+import numpy as np
+
+TARGET_WIDTH = 8
+TARGET_HEIGHT = 16
 REMOVE_DOT_RE = re.compile(r"\..*$")
-
-def fit_to_higher_bitsize(n: int) -> int:
-    if n <= 8:
-        return 8
-    if n <= 16:
-        return 16
-    if n <= 32:
-        return 32
-    if n <= 64:
-        return 64
-    raise ValueError("Value too big")
-
-
-HEADER = f"""#include <array>
-#include <map>
-#include <cstdint>
-
-namespace PlyFontData::[NAME] {"{"}
-
-using LineType = uint{fit_to_higher_bitsize(TARGET_WIDTH)}_t;
-static const int WIDTH = {TARGET_WIDTH};
-static const int HEIGHT = {TARGET_HEIGHT};
-
-static const std::map<unsigned char, std::array<LineType, HEIGHT>> RASTERIZED_CHARACTERS{"{"}"""
-
-FOOTER = "};\n}\n"
-
 
 def get_max_bounds(font):
     glyf_table = font["glyf"]
@@ -61,40 +37,19 @@ def get_max_bounds(font):
     return tuple(max_bounds)
 
 
-def code_gen(m: list[list[bool]], c: int):
-    lines: list[int] = []
-
-    for line in m:
-        value = 0
-        for i in range(len(line)):
-            v = line[i]
-            value <<= 1
-            if not v:
-                continue
-            value |= 1
-        lines.append(value)
-
-    lines_hex: list[str] = [hex(value) for value in lines]
-
-    lines_cpp = "{" + ", ".join(lines_hex) + "}"
-    char_cpp = f"/* {chr(c)} */ {c}, "
-
-    return "{" + char_cpp + lines_cpp + "}"
-
-
-def byte_array_to_bool(arr: bytes, size: tuple[int, int]) -> list[list[bool]]:
-    result: list[list[bool]] = []
+def byte_array_to_int(arr: bytes, size: tuple[int, int]) -> list[list[int]]:
+    result: list[list[int]] = []
 
     for y in range(size[1]):
-        line: list[bool] = []
+        line: list[int] = []
         for x in range(size[0]):
-            line.append(arr[x + y * size[0]] > 127)
+            line.append(arr[x + y * size[0]])
         result.append(line)
 
     return result
 
 
-def get_matrix_by_ord(font_path: str) -> dict[int, list[list[bool]]]:
+def get_matrix_by_ord(font_path: str) -> dict[int, list[list[int]]]:
     result = {}
 
     with TTFont(font_path) as font:
@@ -121,7 +76,7 @@ def get_matrix_by_ord(font_path: str) -> dict[int, list[list[bool]]]:
             colors, size = pen.buffer(
                 width=TARGET_WIDTH, height=TARGET_HEIGHT, transform=transform
             )
-            result[glyph_ord] = byte_array_to_bool(colors, size)
+            result[glyph_ord] = byte_array_to_int(colors, size)
     return result
 
 
@@ -136,6 +91,26 @@ def raster_to_stdout(raster: dict[int, list[list[bool]]]):
                 else:
                     print(" ", end="")
             print()
+
+def raster_dict_to_image(raster: dict[int, list[list[int]]]):
+    width = len(list(raster.values())[0][0])
+    height = len(list(raster.values())[0])
+
+    output = np.zeros((height * 0x8, width * 0x10), dtype=np.uint8)
+
+    for c, m in raster.items():
+        if c & 0x80:
+            continue
+
+        x = (c & 0x0f) * width
+        y = ((c & 0x70) >> 4) * height
+
+        for i in range(height):
+            for j in range(width):
+                output[y + i, x + j] = m[i][j]
+
+    return output
+
 
 
 def main():
@@ -152,22 +127,12 @@ def main():
     if debug:
         raster_to_stdout(rasterized)
         return
+
+    v = raster_dict_to_image(rasterized)
+    i = Image.fromarray(v, mode='L')
+    with open(output, 'wb') as f:
+        i.save(f, "png")
     
-    with open(output, 'w') as f:
-        gen_code(rasterized, f)
-
-
-def gen_code(raster: dict[int, list[list[bool]]], f=sys.stdout):
-    entries = []
-
-    name = "no_name" if f == sys.stdout else REMOVE_DOT_RE.sub("", os.path.basename(f.name))
-    for char, m in raster.items():
-        entries.append(code_gen(m, char))
-
-    print(HEADER.replace("[NAME]", name), file=f)
-    print(",\n".join(entries), file=f)
-    print(FOOTER, file=f)
-
 
 if __name__ == "__main__":
     main()

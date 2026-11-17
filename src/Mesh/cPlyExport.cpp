@@ -2,7 +2,7 @@
 #include "MMVII_Sensor.h"
 #include "MMVII_Image2D.h"
 #include "MMVII_PCSens.h"
-#include "PlyFonts/all.h"
+#include "../Font/cFontDefinitions.h"
 
 namespace MMVII
 {
@@ -43,12 +43,13 @@ void cPlyExportCamGeom::AddCenters(cPlyVertices & aPlyverts, const std::vector<c
     }
 }
 
-namespace PlyRegularFont = PlyFontData::SourceCodeProRegular;
-
 void cPlyExportCamGeom::AddImagePlanes(cPlyVertices & aPlyverts, const std::vector<cSensorImage *>& aVSens) const
 {
     // add points in image plane
     int aSteps = 50;
+    const auto &font = cFontDefinitions::Default();
+    const auto &size = font.GetFont("default").value().CharacterData(' ').DIm().Sz();
+
     for (auto aSens : aVSens)
     {
         cPt2di aSz = aSens->Sz();
@@ -99,7 +100,7 @@ void cPlyExportCamGeom::AddImagePlanes(cPlyVertices & aPlyverts, const std::vect
             const auto offsetX = aSens->ImageAndDepth2Ground(cPt3dr(1, 0, aF)) - origin;
             const auto offsetY = aSens->ImageAndDepth2Ground(cPt3dr(0, 1, aF)) - origin;
 
-            const auto textScale = (double) aSz[0] / aSens->NameImage().size() / PlyRegularFont::WIDTH;
+            const auto textScale = (double) aSz[0] / aSens->NameImage().size() / size.x();
             
             const auto textSize = aPlyverts.StringSize(textScale, offsetX, offsetY, aSens->NameImage());
             const auto center = aSens->ImageAndDepth2Ground(cPt3dr(aSz[0] / 2, aSz[1] / 2, aF));

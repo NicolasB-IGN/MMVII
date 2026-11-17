@@ -170,6 +170,7 @@ extern cSpecMMVII_Appli  TheSpec_EpipTest;
 extern cSpecMMVII_Appli  TheSpecAppliBenchAPBI;
 extern cSpecMMVII_Appli  TheSpecAppliTestElemBundle;
 
+extern cSpecMMVII_Appli TheSpec_FontTest;
 
 };
 
